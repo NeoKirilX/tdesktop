@@ -13,6 +13,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "lang/lang_keys.h"
 #include "main/main_session.h"
 #include "settings/settings_builder.h"
+#include "settings/sections/settings_main.h"
 #include "ui/basic_click_handlers.h"
 #include "ui/painter.h"
 #include "ui/rect.h"
@@ -33,6 +34,11 @@ using namespace Builder;
 
 constexpr auto kExteraGramChannel = "https://t.me/Exteragram_tdesktop"_q;
 constexpr auto kExteraGramChat = "https://t.me/+oZKYqEKf9BljYzQy"_q;
+
+constexpr auto kPhotoSize = 100;
+constexpr auto kCardHeight = 80;
+constexpr auto kButtonWidth = 80;
+constexpr auto kButtonHeight = 30;
 
 struct PluginInfo {
 	QString id;
@@ -88,31 +94,31 @@ ExteraGramCover::ExteraGramCover(QWidget *parent)
 : FixedHeightWidget(
 	parent,
 	st::settingsPhotoTop
-		+ st::infoProfileCover.photo.size.height()
+		+ kPhotoSize
 		+ st::settingsPhotoBottom) {
 }
 
 void ExteraGramCover::paintEvent(QPaintEvent *) {
 	auto p = QPainter(this);
 
-	const auto photo = st::infoProfileCover.photo;
-	const auto size = photo.size;
 	const auto x = st::settingsPhotoLeft;
 	const auto y = st::settingsPhotoTop;
 
 	PainterHighQualityEnabler hq(p);
 	p.setPen(Qt::NoPen);
 	p.setBrush(st::windowBgActive);
-	p.drawEllipse(QRect(QPoint(x, y), size));
+	p.drawEllipse(
+		x,
+		y,
+		kPhotoSize,
+		kPhotoSize);
 
-	const auto letter = u"E"_q;
-	const auto font = st::normalFont;
 	p.setPen(st::windowFgActive);
-	p.setFont(font);
+	p.setFont(st::normalFont);
 	p.drawText(
-		QRect(QPoint(x, y), size),
+	 QRect(x, y, kPhotoSize, kPhotoSize),
 		Qt::AlignCenter,
-		letter);
+		u"E"_q);
 }
 
 class PluginCard final : public Ui::RpWidget {
@@ -138,7 +144,7 @@ PluginCard::PluginCard(
 : RpWidget(parent)
 , _info(info)
 , _reload(std::move(reloadCallback)) {
-	resize(0, 80);
+	resize(0, kCardHeight);
 }
 
 void PluginCard::paintEvent(QPaintEvent *) {
@@ -148,7 +154,7 @@ void PluginCard::paintEvent(QPaintEvent *) {
 
 	const auto cursorPos = mapFromGlobal(QCursor::pos());
 	if (rect().contains(cursorPos)) {
-		p.fillRect(rect(), st::textBgOver);
+		p.fillRect(rect(), st::windowBgOver);
 	}
 
 	const auto photoSize = 48;
@@ -158,7 +164,10 @@ void PluginCard::paintEvent(QPaintEvent *) {
 	PainterHighQualityEnabler hq(p);
 	p.setPen(Qt::NoPen);
 	p.setBrush(st::windowBgActive);
-	p.drawEllipse(QPoint(photoX + photoSize / 2, photoY + photoSize / 2), photoSize / 2, photoSize / 2);
+	p.drawEllipse(
+		QPoint(photoX + photoSize / 2, photoY + photoSize / 2),
+		photoSize / 2,
+		photoSize / 2);
 
 	p.setPen(st::windowFgActive);
 	p.setFont(st::normalFont);
@@ -171,24 +180,40 @@ void PluginCard::paintEvent(QPaintEvent *) {
 	const auto nameY = photoY + 4;
 	p.setPen(st::windowFg);
 	p.setFont(st::normalFont);
-	p.drawText(nameX, nameY + st::normalFont->ascent, _info->name);
+	p.drawText(
+		nameX,
+		nameY + st::normalFont->ascent,
+		_info->name);
 
-	const auto versionAuthor = _info->version + u" \xB7 "_q + _info->author;
+	const auto versionAuthor = _info->version
+		+ u" \xB7 "_q
+		+ _info->author;
 	p.setPen(st::windowSubTextFg);
 	p.setFont(st::normalFont);
-	p.drawText(nameX, nameY + st::normalFont->height + st::normalFont->ascent + 2, versionAuthor);
+	p.drawText(
+		nameX,
+		nameY + st::normalFont->height + st::normalFont->ascent + 2,
+		versionAuthor);
 
-	const auto buttonWidth = 80;
-	const auto buttonHeight = 30;
-	const auto buttonX = w - st::boxRowPadding.right() - buttonWidth;
-	const auto buttonY = (h - buttonHeight) / 2;
+	const auto buttonX = w
+		- st::boxRowPadding.right()
+		- kButtonWidth;
+	const auto buttonY = (h - kButtonHeight) / 2;
 
 	const auto buttonColor = _info->installed
-		? (_info->enabled ? st::windowBgActive : st::windowSubTextFg)
+		? (_info->enabled
+			? st::windowBgActive
+			: st::windowSubTextFg)
 		: st::windowBgActive;
 	p.setPen(Qt::NoPen);
 	p.setBrush(buttonColor);
-	p.drawRoundedRect(buttonX, buttonY, buttonWidth, buttonHeight, st::buttonRadius, st::buttonRadius);
+	p.drawRoundedRect(
+		buttonX,
+		buttonY,
+		kButtonWidth,
+		kButtonHeight,
+		st::buttonRadius,
+		st::buttonRadius);
 
 	p.setPen(_info->installed ? st::windowBg : st::windowFg);
 	p.setFont(st::normalFont);
@@ -196,7 +221,7 @@ void PluginCard::paintEvent(QPaintEvent *) {
 		? (_info->enabled ? u"Enabled"_q : u"Enable"_q)
 		: u"Install"_q;
 	p.drawText(
-		QRect(QPoint(buttonX, buttonY), QSize(buttonWidth, buttonHeight)),
+		QRect(QPoint(buttonX, buttonY), QSize(kButtonWidth, kButtonHeight)),
 		Qt::AlignCenter,
 		buttonText);
 }
@@ -208,15 +233,16 @@ void PluginCard::mousePressEvent(QMouseEvent *e) {
 
 	const auto w = width();
 	const auto h = height();
-	const auto buttonWidth = 80;
-	const auto buttonX = w - st::boxRowPadding.right() - buttonWidth;
-	const auto buttonY = (h - 30) / 2;
+	const auto buttonX = w
+		- st::boxRowPadding.right()
+		- kButtonWidth;
+	const auto buttonY = (h - kButtonHeight) / 2;
 
 	const auto clickPos = e->pos();
 	if (clickPos.x() >= buttonX
-		&& clickPos.x() <= buttonX + buttonWidth
+		&& clickPos.x() <= buttonX + kButtonWidth
 		&& clickPos.y() >= buttonY
-		&& clickPos.y() <= buttonY + 30) {
+		&& clickPos.y() <= buttonY + kButtonHeight) {
 		if (!_info->installed) {
 			_info->installed = true;
 			_info->enabled = true;
@@ -310,46 +336,6 @@ rpl::producer<QString> ExteraGram::title() {
 	return rpl::single(u"ExteraGram Preferences"_q);
 }
 
-void ExteraGram::setupContent() {
-	const auto content = Ui::CreateChild<Ui::VerticalLayout>(this);
-
-	content->add(object_ptr<ExteraGramCover>(content));
-
-	content->add(
-		object_ptr<Ui::FlatLabel>(
-			content,
-			rpl::single(u"ExteraGram"_q),
-			st::defaultFlatLabel),
-		QMargins(
-			st::settingsPhotoLeft
-				+ st::infoProfileCover.photo.size.width()
-				+ st::boxRowPadding.left(),
-			st::settingsNameTop,
-			0,
-			0));
-
-	content->add(
-		object_ptr<Ui::FlatLabel>(
-			content,
-			rpl::single(u"Telegram Desktop with extra features"_q),
-			st::defaultFlatLabel),
-		QMargins(
-			st::settingsPhotoLeft
-				+ st::infoProfileCover.photo.size.width()
-				+ st::boxRowPadding.left(),
-			0,
-			0,
-			0));
-
-	Ui::AddSkip(content);
-	Ui::AddDivider(content);
-	Ui::AddSkip(content);
-
-	build(content, kExteraGramSection);
-
-	Ui::ResizeFitChild(this, content);
-}
-
 const auto kMeta = BuildHelper({
 	.id = ExteraGram::Id(),
 	.parentId = MainId(),
@@ -364,6 +350,46 @@ const auto kMeta = BuildHelper({
 });
 
 const SectionBuildMethod kExteraGramSection = kMeta.build;
+
+void ExteraGram::setupContent() {
+	const auto content = Ui::CreateChild<Ui::VerticalLayout>(this);
+
+	content->add(object_ptr<ExteraGramCover>(content));
+
+	const auto nameLeft = st::settingsPhotoLeft
+		+ kPhotoSize
+		+ st::boxRowPadding.left();
+
+	content->add(
+		object_ptr<Ui::FlatLabel>(
+			content,
+			rpl::single(u"ExteraGram"_q),
+			st::defaultFlatLabel),
+		QMargins(
+			nameLeft,
+			st::settingsNameTop,
+			0,
+			0));
+
+	content->add(
+		object_ptr<Ui::FlatLabel>(
+			content,
+			rpl::single(u"Telegram Desktop with extra features"_q),
+			st::defaultFlatLabel),
+		QMargins(
+			nameLeft,
+			0,
+			0,
+			0));
+
+	Ui::AddSkip(content);
+	Ui::AddDivider(content);
+	Ui::AddSkip(content);
+
+	build(content, kExteraGramSection);
+
+	Ui::ResizeFitChild(this, content);
+}
 
 } // namespace
 

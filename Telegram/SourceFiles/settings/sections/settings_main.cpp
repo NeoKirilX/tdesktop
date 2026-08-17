@@ -1224,4 +1224,3 @@ void OpenAskQuestionConfirm(not_null<Window::SessionController*> window) {
 }
 
 } // namespace Settings
-
