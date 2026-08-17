@@ -47,6 +47,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "settings/cloud_password/settings_cloud_password_input.h"
 #include "settings/sections/settings_advanced.h"
 #include "settings/sections/settings_business.h"
+#include "settings/sections/settings_exteragram.h"
 #include "settings/sections/settings_calls.h"
 #include "settings/sections/settings_chat.h"
 #include "settings/settings_codes.h"
@@ -432,6 +433,13 @@ void BuildSectionButtons(SectionBuilder &builder) {
 		.targetSection = AdvancedId(),
 		.icon = { &st::menuIconManage },
 		.keywords = { u"performance"_q, u"proxy"_q, u"experimental"_q },
+	});
+
+	builder.addSectionButton({
+		.title = rpl::single(u"ExteraGram"_q),
+		.targetSection = ExteraGramId(),
+		.icon = { &st::menuIconEmojiObjects },
+		.keywords = { u"exteragram"_q, u"plugins"_q, u"mods"_q },
 	});
 
 	builder.addSectionButton({
