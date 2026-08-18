@@ -32,8 +32,8 @@ namespace {
 
 using namespace Builder;
 
-constexpr auto kExteraGramChannel = "https://t.me/Exteragram_tdesktop"_q;
-constexpr auto kExteraGramChat = "https://t.me/+oZKYqEKf9BljYzQy"_q;
+const auto kExteraGramChannel = "https://t.me/Exteragram_tdesktop"_q;
+const auto kExteraGramChat = "https://t.me/+oZKYqEKf9BljYzQy"_q;
 
 constexpr auto kPhotoSize = 100;
 constexpr auto kCardHeight = 80;
@@ -58,7 +58,7 @@ std::vector<PluginInfo> &AllPlugins() {
 			.name = u"QR Code Generator"_q,
 			.author = u"exteraDev"_q,
 			.version = u"1.0.0"_q,
-			.description = u"Generates QR codes from any text or link right in the chat." _q,
+			.description = u"Generates QR codes from any text or link right in the chat."_q,
 			.stickerEmoji = u"\xF0\x9F\x92\xBB"_q,
 		},
 		{
@@ -66,7 +66,7 @@ std::vector<PluginInfo> &AllPlugins() {
 			.name = u"Custom FAB"_q,
 			.author = u"itsv1eds"_q,
 			.version = u"1.2.0"_q,
-			.description = u"Change the floating action button in the chat list with custom actions." _q,
+			.description = u"Change the floating action button in the chat list with custom actions."_q,
 			.stickerEmoji = u"\xF0\x9F\x92\xA1"_q,
 		},
 		{
@@ -74,7 +74,7 @@ std::vector<PluginInfo> &AllPlugins() {
 			.name = u"Now Playing"_q,
 			.author = u"Nightly"_q,
 			.version = u"2.0.0"_q,
-			.description = u"Show your currently playing track from Spotify or Last.fm in your profile status." _q,
+			.description = u"Show your currently playing track from Spotify or Last.fm in your profile status."_q,
 			.stickerEmoji = u"\xF0\x9F\x8E\xB5"_q,
 		},
 	};
