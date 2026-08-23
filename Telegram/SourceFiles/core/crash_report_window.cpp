@@ -40,7 +40,7 @@ PreLaunchWindow::PreLaunchWindow(QString title) {
 	setWindowIcon(Window::CreateIcon());
 	setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
 
-	setWindowTitle(title.isEmpty() ? u"Telegram"_q : title);
+	setWindowTitle(title.isEmpty() ? u"ExteraGram"_q : title);
 
 	QPalette p(palette());
 	p.setColor(QPalette::Window, QColor(255, 255, 255));
@@ -245,7 +245,7 @@ NotStartedWindow::NotStartedWindow()
 : _label(this)
 , _log(this)
 , _close(this) {
-	_label.setText(u"Could not start Telegram Desktop!\nYou can see complete log below:"_q);
+	_label.setText(u"Could not start ExteraGram Desktop!\nYou can see complete log below:"_q);
 
 	_log.setPlainText(Logs::full());
 
@@ -387,9 +387,9 @@ LastCrashedWindow::LastCrashedWindow(
 		[=] { networkSettings(); });
 
 	if (_sendingState == SendingNoReport) {
-		_label.setText(u"Last time Telegram Desktop was not closed properly."_q);
+		_label.setText(u"Last time ExteraGram Desktop was not closed properly."_q);
 	} else {
-		_label.setText(u"Last time Telegram Desktop crashed :("_q);
+		_label.setText(u"Last time ExteraGram Desktop crashed :("_q);
 	}
 
 	if (_updaterData) {
@@ -615,12 +615,12 @@ void LastCrashedWindow::checkingFinished() {
 	LOG(("Crash report check for sending done, result: %1").arg(QString::fromUtf8(result)));
 
 	if (result == "Old") {
-		_pleaseSendReport.setText(u"This report is about some old version of Telegram Desktop."_q);
+		_pleaseSendReport.setText(u"This report is about some old version of ExteraGram Desktop."_q);
 		_sendingState = SendingTooOld;
 		updateControls();
 		return;
 	} else if (result == "Unofficial") {
-		_pleaseSendReport.setText(u"You use some custom version of Telegram Desktop."_q);
+		_pleaseSendReport.setText(u"You use some custom version of ExteraGram Desktop."_q);
 		_sendingState = SendingUnofficial;
 		updateControls();
 		return;

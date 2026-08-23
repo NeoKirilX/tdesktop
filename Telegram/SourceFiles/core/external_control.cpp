@@ -110,7 +110,7 @@ void RequestEnableAutomation() {
 		FillAutomationConfirmBox(
 			box,
 			u"An external program is trying to control "
-			u"Telegram Desktop over the local socket — read open "
+			u"ExteraGram Desktop over the local socket — read open "
 			u"windows and activate them.\n\nEnable local "
 			u"automation? While it is on, anything running under your "
 			u"user account can control the app."_q,
