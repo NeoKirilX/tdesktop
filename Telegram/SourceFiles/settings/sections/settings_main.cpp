@@ -364,6 +364,14 @@ void BuildSectionButtons(SectionBuilder &builder) {
 	const auto controller = builder.controller();
 	const auto showOther = builder.showOther();
 
+	builder.addDivider();
+	builder.addSectionButton({
+		.title = rpl::single(u"ExteraGram"_q),
+		.targetSection = ExteraGramId(),
+		.icon = { &st::menuIconEmojiObjects },
+		.keywords = { u"exteragram"_q, u"plugins"_q, u"mods"_q },
+	});
+
 	if (!session->supportMode()) {
 		builder.addSectionButton({
 			.title = tr::lng_settings_my_account(),
@@ -433,13 +441,6 @@ void BuildSectionButtons(SectionBuilder &builder) {
 		.targetSection = AdvancedId(),
 		.icon = { &st::menuIconManage },
 		.keywords = { u"performance"_q, u"proxy"_q, u"experimental"_q },
-	});
-
-	builder.addSectionButton({
-		.title = rpl::single(u"ExteraGram"_q),
-		.targetSection = ExteraGramId(),
-		.icon = { &st::menuIconEmojiObjects },
-		.keywords = { u"exteragram"_q, u"plugins"_q, u"mods"_q },
 	});
 
 	builder.addSectionButton({

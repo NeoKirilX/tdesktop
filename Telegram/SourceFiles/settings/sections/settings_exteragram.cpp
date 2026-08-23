@@ -27,6 +27,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "styles/style_menu_icons.h"
 #include "styles/style_settings.h"
 
+#include <QPixmap>
+
 namespace Settings {
 namespace {
 
@@ -104,21 +106,30 @@ void ExteraGramCover::paintEvent(QPaintEvent *) {
 	const auto x = st::settingsPhotoLeft;
 	const auto y = st::settingsPhotoTop;
 
-	PainterHighQualityEnabler hq(p);
-	p.setPen(Qt::NoPen);
-	p.setBrush(st::windowBgActive);
-	p.drawEllipse(
-		x,
-		y,
-		kPhotoSize,
-		kPhotoSize);
-
-	p.setPen(st::windowFgActive);
-	p.setFont(st::normalFont);
-	p.drawText(
-	 QRect(x, y, kPhotoSize, kPhotoSize),
-		Qt::AlignCenter,
-		u"E"_q);
+	QPixmap logo(u":/gui/art/extera.png"_q);
+	if (!logo.isNull()) {
+		PainterHighQualityEnabler hq(p);
+		p.setPen(Qt::NoPen);
+		p.setClipRect(x, y, kPhotoSize, kPhotoSize);
+		p.drawPixmap(
+			x,
+			y,
+			kPhotoSize,
+			kPhotoSize,
+			logo);
+		p.setClipping(false);
+	} else {
+		PainterHighQualityEnabler hq(p);
+		p.setPen(Qt::NoPen);
+		p.setBrush(st::windowBgActive);
+		p.drawEllipse(x, y, kPhotoSize, kPhotoSize);
+		p.setPen(st::windowFgActive);
+		p.setFont(st::normalFont);
+		p.drawText(
+			QRect(x, y, kPhotoSize, kPhotoSize),
+			Qt::AlignCenter,
+			u"E"_q);
+	}
 }
 
 class PluginCard final : public Ui::RpWidget {
